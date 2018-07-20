@@ -4,18 +4,25 @@ class APIError extends Error {
 
         this.status = status;
         this.message = message;
-        this.data = data;
+        this.data = data || {};
     }
 }
 
 class NotFoundError extends APIError {
-    constructor(message, route) {
-        data = {};
-        if(route !== undefined) data.route = route;
-        super(404, message, data);
+    constructor() {
+        super(404, "Not Found", {});
+    }
+}
+
+class ParameterError extends APIError {
+    constructor(requiredParams) {
+        super(400, "Missing required parameters", {
+            required: requiredParams
+        });
     }
 }
 
 module.exports = {
-    NotFoundError: NotFoundError
+    NotFoundError: NotFoundError,
+    ParameterError: ParameterError
 };
