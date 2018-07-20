@@ -17,7 +17,7 @@ app.use(async (ctx, next) => {
         ctx.status = err.status || 500;
         ctx.body = {
             status: ctx.status,
-            message: (ctx.status % 100 === 5) ? "Internal Server Error" : err.message,
+            message: (Math.floor(ctx.status / 100) === 5) ? "Internal Server Error" : err.message,
             data: err.data || {}
         };
         ctx.app.emit('error', err, ctx);
