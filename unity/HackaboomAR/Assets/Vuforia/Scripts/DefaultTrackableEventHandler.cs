@@ -72,13 +72,14 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         }
     }
 
-    #endregion // PUBLIC_METHODS
+	#endregion // PUBLIC_METHODS
 
-    #region PROTECTED_METHODS
-
+	#region PROTECTED_METHODS
+	public bool seen = false;
     protected virtual void OnTrackingFound()
     {
-        var rendererComponents = GetComponentsInChildren<Renderer>(true);
+		seen = true;
+		var rendererComponents = GetComponentsInChildren<Renderer>(true);
         var colliderComponents = GetComponentsInChildren<Collider>(true);
         var canvasComponents = GetComponentsInChildren<Canvas>(true);
 		if (GetComponent<Villain>()!=null && GetComponent<Villain>().isMarkerUsed)
@@ -107,7 +108,8 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
 
     protected virtual void OnTrackingLost()
     {
-        var rendererComponents = GetComponentsInChildren<Renderer>(true);
+		seen = false;
+		var rendererComponents = GetComponentsInChildren<Renderer>(true);
         var colliderComponents = GetComponentsInChildren<Collider>(true);
         var canvasComponents = GetComponentsInChildren<Canvas>(true);
 		var uianch = GetComponentInChildren<UIAnchor>();

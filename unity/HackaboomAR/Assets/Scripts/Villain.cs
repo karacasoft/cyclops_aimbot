@@ -13,7 +13,7 @@ public class Villain : MonoBehaviour {
 	{
 		this.vName = vName;
 		this.vDesc = description;
-		string imageurl = "http://206.189.168.177:3000/images" + imageid;
+		string imageurl = "http://206.189.168.177:3000/images/" + imageid;
 		Debug.Log(imageurl);
 		using (WWW www = new WWW(imageurl))
 		{
@@ -27,9 +27,50 @@ public class Villain : MonoBehaviour {
 	}
 	void UpdateUI()
 	{
-		nameTM.text = vName;
+		nameTM.text = ResolveTextSize(vName, 10);
 		imageSR.sprite = vImage;
-		descTM.text = vDesc;
+		descTM.text = ResolveTextSize(vDesc,30);
 		Debug.Log("Updated UI.");
+	}
+
+	private string ResolveTextSize(string input, int lineLength)
+	{
+
+		// Split string by char " "         
+		string[] words = input.Split(" "[0]);
+
+		// Prepare result
+		string result = "";
+
+		// Temp line string
+		string line = "";
+
+		// for each all words        
+		foreach (string s in words)
+		{
+			// Append current word into line
+			string temp = line + " " + s;
+
+			// If line length is bigger than lineLength
+			if (temp.Length > lineLength)
+			{
+
+				// Append current line into result
+				result += line + "\n";
+				// Remain word append into new line
+				line = s;
+			}
+			// Append current word into current line
+			else
+			{
+				line = temp;
+			}
+		}
+
+		// Append last line into result        
+		result += line;
+
+		// Remove first " " char
+		return result.Substring(1, result.Length - 1);
 	}
 }
