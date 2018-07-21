@@ -83,7 +83,7 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     padding: '20px 2vw',
-    backgroundColor: '#ffa1a1'
+    backgroundColor: 'rgb(123,40,51)'
   },
   location: {
     maxHeight: 100,

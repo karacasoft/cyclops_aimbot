@@ -26,10 +26,10 @@ class LoginModal extends React.Component {
     const { username, password } = this.state;
     return (
       <Modal show={ page === PAGES.LOG_IN } style={ styles.container }>
-        <Modal.Header>
-          <h1>Log In</h1>
-        </Modal.Header>
         <div style={ styles.innerContainer }>
+          <Modal.Header>
+            <h1>Log In</h1>
+          </Modal.Header>
           <input
             type='text'
             style={ styles.input }
@@ -76,6 +76,8 @@ const styles = {
     padding: 60
   },
   innerContainer: {
+    backgroundColor: 'rgb(188,141,31)',
+    borderRadius: 4,
     padding: 60
   },
   input: {
@@ -92,6 +94,7 @@ const styles = {
     fontSize: 24,
     margin: '24px auto',
     padding: 20,
-    display: 'block'
+    display: 'block',
+    backgroundColor: 'rgb(106,63,160)'
   }
 };

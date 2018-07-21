@@ -67,10 +67,10 @@ class AddVillainModal extends React.Component {
     const { image, villainName, villainDescription, villainMarkerId } = this.state;
     return (
       <Modal show={ page === PAGES.ADD_VILLAIN } style={ styles.container }>
-        <Modal.Header>
-          <h1>Add Villain</h1>
-        </Modal.Header>
         <div style={ styles.group }>
+          <Modal.Header>
+            <h1>Add Villain</h1>
+          </Modal.Header>
           <div style={ styles.imageHolder }>
             <input type='file' onChange={ this.handleImageChange } style={ styles.imageInput } accept='image/*' />
             { image && <img src={ image } style={ styles.imagePreview } /> }
@@ -105,16 +105,16 @@ class AddVillainModal extends React.Component {
           <label> (Currently, only the marker id) </label>
           <br />
           <label>Omit this field to prevent the villain to synchronize with Cyclops'App.</label>
+          { error && <label>Hata: { error.toString() }</label>}
+          <Modal.Footer>
+            <Button bsStyle='primary' onClick={ this.handleAddVillain }>
+              Add Villain
+            </Button>
+            <Button bsStyle='danger' onClick={ this.handleClosePage }>
+              Cancel
+            </Button>
+          </Modal.Footer>
         </div>
-        { error && <label>Hata: { error.toString() }</label>}
-        <Modal.Footer>
-          <Button bsStyle='primary' onClick={ this.handleAddVillain }>
-            Add Villain
-          </Button>
-          <Button bsStyle='danger' onClick={ this.handleClosePage }>
-            Cancel
-          </Button>
-        </Modal.Footer>
       </Modal>
     );
   }
@@ -143,7 +143,9 @@ const styles = {
 
   },
   group: {
-    padding: 60
+    padding: 60,
+    backgroundColor: 'rgb(188,141,31)',
+    borderRadius: 4
   },
   imageHolder: {
     maxWidth: 180,
