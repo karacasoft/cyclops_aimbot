@@ -22,13 +22,6 @@ villainRouter
     ctx.body = (await Controller.getAll()).map(value => value.toJSON());
 })
 
-// GET /villains/withMarker
-.get('/withMarker', async (ctx, next) => {
-    ctx.body = (await Controller.getAll())
-        .map(value => value.toJSON())
-        .filter(value => value.markerid !== null);
-})
-
 // GET /villains/:id
 .get('/:id', async (ctx, next) => {
     ctx.body = notFoundIfNull((await Controller.get(ctx.params.id))).toJSON();

@@ -26,15 +26,21 @@ app.use(async (ctx, next) => {
     }
 });
 
+const VillainController = require('./villains').Controller;
+
 const villainsRoute = require('./villains').Router;
 const imagesRoute = require('./images').Router;
 const usersRoute = require('./users').Router;
 
 mainRouter.use(Auth.Router.routes(), Auth.Router.allowedMethods());
 
-mainRouter.get('/open', (ctx, next) => {
-    ctx.body = "true";
-});
+// GET /villains/withMarker
+mainRouter.get('/villains/withMarker', async (ctx, next) => {
+    ctx.body = (await VillainController.getAll())
+        .map(value => value.toJSON())
+        .filter(value => value.markerid !== null);
+})
+
 
 mainRouter.use('/villains', villainsRoute.routes(), villainsRoute.allowedMethods());
 mainRouter.use('/images', imagesRoute.routes(), imagesRoute.allowedMethods());
