@@ -1,4 +1,5 @@
 const Router = require('koa-router');
+const randomstring = require('randomstring');
 
 const fs = require('fs');
 const path = require('path');
@@ -12,22 +13,34 @@ const filterProperties = Util.filterProperties;
 
 const Errors = require('../errors');
 
+const Auth = require('../auth');
+
 const imageRouter = new Router();
 
 imageRouter
 
-.get('/:id', (ctx, next) => {
-    const image = await Controller.get(ctx.params.id);
+.all('/', Auth.Middleware)
+
+// GET /images/:id
+.get('/:id', async (ctx, next) => {
+    const image = notFoundIfNull(await Controller.get(ctx.params.id));
     const imagePath = path.join(__dirname, 'store', image.get('filename'));
-    ctx.body = fs.readFileSync(imagePath, 'utf8');
+    ctx.body = fs.readFileSync(imagePath);
 })
 
-.post('/', (ctx, next) => {
-    if(ctx.request.body.hasOwnProperty('imageBase64')) {
-        ctx.request.body
+// POST /images
+.post('/', async (ctx, next) => {
+    if(!ctx.request.body.hasOwnProperty('imageBase64')) {
+        throw new ParameterError(['imageBase64']);
     }
-    const imageData = 
+    filename = randomstring.generate(10);
+    const imagePath = path.join(__dirname, 'store', filename);
+    const imageData = ctx.request.body.imageBase64.replace(/^data:image\/.*;base64,/, "");
+    fs.writeFileSync(imagePath, imageData, 'base64');
+    const dbData = await Controller.create(filename);
+    ctx.body = dbData.toJSON();
 });
+
 
 
 module.exports = imageRouter;

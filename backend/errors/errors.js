@@ -22,7 +22,14 @@ class ParameterError extends APIError {
     }
 }
 
+class UnauthorizedError extends APIError {
+    constructor() {
+        super(401, "Unauthorized", {});
+    }
+}
+
 module.exports = {
     NotFoundError: NotFoundError,
-    ParameterError: ParameterError
+    ParameterError: ParameterError,
+    UnauthorizedError: UnauthorizedError
 };

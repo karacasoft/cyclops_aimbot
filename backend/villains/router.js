@@ -11,6 +11,11 @@ const Errors = require('../errors');
 
 const villainRouter = new Router();
 
+const Auth = require('../auth');
+
+villainRouter.use(Auth.Middleware);
+villainRouter.use('/:id', Auth.Middleware);
+
 villainRouter
 // GET /villains
 .get('/', async (ctx, next) => {
@@ -21,11 +26,6 @@ villainRouter
 .get('/withMarker', async (ctx, next) => {
     ctx.body = (await Controller.getAll())
         .map(value => value.toJSON())
-        .map(value => {
-            value.imageurl = 'https://i.ytimg.com/vi/QH2-TGUlwu4/hqdefault.jpg'
-            return value;
-        })
-
         .filter(value => value.markerid !== null);
 })
 
@@ -52,9 +52,9 @@ villainRouter
 // PUT /villains/:id
 .put('/:id', async (ctx, next) => {
     const filterParams = [ 'name', 'description', 'imageid', 'markerid' ];
-    values = filterProperties(ctx.request.body, filterParams);
+    const filtered = filterProperties(ctx.request.body, filterParams);
     await Controller.update(
-        ctx.request.body, { 
+        filtered, { 
             where: {
                 id: ctx.params.id
             }

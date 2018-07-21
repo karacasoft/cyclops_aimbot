@@ -3,6 +3,8 @@ const json = require('koa-json');
 const Router = require('koa-router');
 const BodyParser = require('koa-bodyparser');
 
+const Auth = require('./auth');
+
 const app = new Koa();
 
 const mainRouter = new Router();
@@ -25,8 +27,16 @@ app.use(async (ctx, next) => {
 });
 
 const villainsRoute = require('./villains').Router;
+const imagesRoute = require('./images').Router;
+const usersRoute = require('./users').Router;
+
+mainRouter.use(Auth.Router.routes(), Auth.Router.allowedMethods());
 
 mainRouter.use('/villains', villainsRoute.routes(), villainsRoute.allowedMethods());
+mainRouter.use('/images', imagesRoute.routes(), imagesRoute.allowedMethods());
+mainRouter.use('/users', usersRoute.routes(), usersRoute.allowedMethods());
+
+
 
 app.use(mainRouter.routes())
     .use(mainRouter.allowedMethods());
