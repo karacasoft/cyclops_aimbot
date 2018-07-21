@@ -31,7 +31,7 @@ imageRouter
 // POST /images
 .post('/', async (ctx, next) => {
     if(!ctx.request.body.hasOwnProperty('imageBase64')) {
-        throw new ParameterError(['imageBase64']);
+        throw new Errors.Api.ParameterError(['imageBase64']);
     }
     filename = randomstring.generate(10);
     const imagePath = path.join(__dirname, 'store', filename);
