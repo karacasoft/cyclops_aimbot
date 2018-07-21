@@ -1,6 +1,6 @@
 import { FETCHES } from './constants';
 
-const URL = '206.189.168.177:3000';
+export const URL = 'http://206.189.168.177:3000';
 
 const myFetch = (path, method, headers, body, url = URL) =>
   fetch(`${url}${path}`, {
@@ -18,7 +18,7 @@ const getQueryString = (params) => {
     .join('&');
   return str ? `?${str}` : '';
 };
-const toArgs = (path, method, body) => {
+const toArgs = (path, method, body = {}) => {
   switch (method) {
     case 'GET':
     case 'HEAD':
@@ -28,26 +28,26 @@ const toArgs = (path, method, body) => {
   }
 };
 
+const login = ({ username, password }) =>
+  toArgs('/login', 'POST', { username, password });
 
-
-const login = ({ user, password }) =>
-  () => true;
-//  toArgs('/', 'POST', { email: user, password });
-
-const addVillain = ({ name, description, image }) =>
-  toArgs('/villains', 'POST', { name, description, imageid: -2}); // todo change image
+const addVillain = ({ name, description, imageid, markerid }) =>
+  toArgs('/villains', 'POST', { name, description, imageid, markerid });
 
 const getVillain = ({ id }) =>
-  toArgs(`/villains${id}`, 'GET');
+  toArgs(`/villains/${id}`, 'GET');
 
 const getVillains = () =>
-  toArgs('villains', 'GET');
+  toArgs('/villains', 'GET');
 
 const removeVillain = ({ id }) =>
-  toArgs(`/villains${id}`, 'DELETE');
+  toArgs(`/villains/${id}`, 'DELETE');
 
-const updateVillain = ({ id, name, description, image }) =>
-  toArgs(`/villains${id}`, 'PUT', { name, description, imageId: -3}); // todo change image
+const updateVillain = ({ id, name, description, imageid }) =>
+  toArgs(`/villains/${id}`, 'PUT', { name, description, imageid});
+
+const addImage = ({ image }) =>
+  toArgs('/images', 'POST', { imageBase64: image });
 
 const getFunc = (fetchType) => {
   switch (fetchType) {
@@ -61,16 +61,18 @@ const getFunc = (fetchType) => {
       return removeVillain;
     case FETCHES.UPDATE_VILLAIN:
       return updateVillain;
+    case FETCHES.ADD_IMAGE:
+      return addImage;
   }
   throw new Error('Fetch Type is not correct.');
 };
 
 function handleFetch(fetchType, data, token) {
   const { path, method, body } = getFunc(fetchType)(data);
-  return myFetch(path, method, { 'X-API-TOKEN': token }, body);
+  return myFetch(path, method, { 'X-Api-Token': token }, body);
 }
 
-function handleError({ errors, detail = '', error = '' }) {
+function handleError({ errors, detail = '', error = '', status }) {
   let errorString = '';
   if (typeof errors !== 'undefined') {
     if (errors.length === 0) {
@@ -89,12 +91,15 @@ function handleError({ errors, detail = '', error = '' }) {
   if (errorString) {
     throw new Error(errorString);
   }
+  if (console.debug(status) >= 400) {
+    throw new Error(status);
+  }
 }
 
 export async function fetchData(fetchType, data, token) {
   const rawResponse = await handleFetch(fetchType, data, token);
   // console.put('rawResponse', rawResponse);
   const response = await rawResponse.json();
-  handleError(response);
+  console.run(handleError,response);
   return response;
 }

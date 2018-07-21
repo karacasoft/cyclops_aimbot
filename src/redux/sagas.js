@@ -2,13 +2,14 @@ import { delay } from 'redux-saga';
 import { call, put, takeEvery, all, select, take, fork, cancel } from 'redux-saga/effects';
 
 import { fetchData } from './fetch';
-import { ACTIONS } from './constants';
-// import { getToken } from './reducers/auth';
+import {ACTIONS, FETCHES} from './constants';
+import {getToken} from './reducers';
 
 function *fetchRequest(action) {
   const oldData = action.data || {};
   try {
-    const token = 'aa'; // yield select(getToken);
+    // todo remove teh token
+    const token = yield select(getToken);
     const data = yield call(fetchData, action.fetchType, action.data, token);
     yield put({ type: ACTIONS.FETCH_SUCCESS, fetchType: action.fetchType, data, oldData });
   } catch (error) {

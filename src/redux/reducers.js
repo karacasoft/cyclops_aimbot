@@ -35,7 +35,7 @@ const loadStateGenerator = (fetchType) =>
     return state;
   };
 
-const page = (state = PAGES.LOG_IN, action) => {
+const page = (state = PAGES./*ADD_VILLAIN/*/LOG_IN, action) => {
   switch (action.type) {
     case ACTIONS.LOG_OUT:
       return PAGES.LOG_IN;
@@ -43,6 +43,10 @@ const page = (state = PAGES.LOG_IN, action) => {
       return PAGES.ADD_VILLAIN;
     case ACTIONS.CLOSE_ADD_VILLAIN_MENU:
       return PAGES.VILLAINS;
+    case ACTIONS.FETCH_SUCCESS:
+      if (action.fetchType === FETCHES.LOG_IN || action.fetchType === FETCHES.ADD_VILLAIN) {
+        return PAGES.VILLAINS;
+      }
   }
   return state;
 };
@@ -55,8 +59,8 @@ const auth = (state = {}, action) => {
     switch (action.fetchType) {
       case FETCHES.LOG_IN:
         return {
-          token: action.data.token,
-          user: action.oldData.user
+          token: action.data.user.apiToken,
+          user: action.oldData.username
         };
     }
   }
@@ -72,7 +76,7 @@ const villainIds = (state = [], action) => {
       case FETCHES.GET_VILLAINS:
         return action.data.map(({ id }) => id);
       case FETCHES.ADD_VILLAIN:
-        return [...state, action.data];
+        return [...state, action.data.id];
       case FETCHES.REMOVE_VILLAIN:
         return state.filter((id) => id !== action.oldData.id);
     }
@@ -103,9 +107,23 @@ const villainsById = (state = {}, action) => {
   return state;
 };
 
+const uploadedImageId = (state = '', action) => {
+  if (action.type === ACTIONS.FETCH_SUCCESS) {
+    switch (action.fetchType) {
+      case FETCHES.ADD_IMAGE:
+        return action.data.id;
+      case FETCHES.ADD_VILLAIN:
+        return '';
+    }
+  }
+  return state;
+};
+
 export const rootReducer = combineReducers({
   page,
   auth,
+  uploadedImageId,
+  imageState: loadStateGenerator(FETCHES.ADD_IMAGE),
   loginState: loadStateGenerator(FETCHES.LOG_IN),
   villainIds,
   villainsById,
@@ -122,8 +140,12 @@ export const getToken = (state) => getAuth(state).token;
 export const getUser = (state) => getAuth(state).user;
 export const getLoginState = (state) => state.loginState;
 
+export const getImageId = (state) => state.uploadedImageId;
+export const getImageState = (state) => state.imageState;
+
 export const getVillainIds = (state) => state.villainIds;
-export const getVillainsById = (state) => state.villainsById;
+// export const getVillainsById = (state) => state.villainsById;
+export const getVillainById = (state, id) => state.villainsById[id];
 
 export const getVillainsLoadState = (state) => state.loadState;
 export const getVillainAddState = (state) => state.addState;

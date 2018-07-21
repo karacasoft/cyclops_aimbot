@@ -2,39 +2,53 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Label } from 'react-bootstrap';
+import logo from './logo.jpeg';
+
+import FaPlus from 'react-icons/lib/fa/plus';
 
 import { getPage, getUser } from './redux/reducers';
+import { PAGES } from './redux/constants';
+import { openAddVillainMenu } from './redux/actions';
 
 class Header extends React.Component {
   static propTypes = {
     user: PropTypes.string,
-    page: PropTypes.string.isRequired
+    page: PropTypes.string.isRequired,
+    openPage: PropTypes.func.isRequired
   };
 
   renderLeftIcon = () => {
     return (
-      <Button bsStyle='info' style={styles.button}>
-        Very Button
-      </Button>
+      <img src={ logo } style={ styles.button } />
     );
   };
 
   renderMiddleIcon = () => {
     const { user, page } = this.props;
-    const bsStyle = user ? 'primary' : 'warning';
+    if (user) {
+      return (
+        <h2 style={ styles.location }>
+          {page === PAGES.VILLAINS ? 'LIST OF VILLAINS' : page}
+        </h2>
+      );
+    }
     return (
-      <Label bsStyle={ console.debug('primary') } style={styles.location}>
-        { console.debug(page) }
-      </Label>
+      <h2 style={ styles.location }>
+        VillainDB
+      </h2>
     );
   };
 
   renderRightIcon = () => {
-    return (
-      <Button bsStyle='success' style={styles.button}>
-        Kuul Button
-      </Button>
-    );
+    const { page } = this.props;
+    if (page !== PAGES.LOG_IN) {
+      return (
+        <Button bsStyle='danger' style={ styles.button } onClick={ this.props.openPage }>
+          <FaPlus style={ styles.buttonPlus } />
+        </Button>
+      );
+    }
+    return null;
   };
 
   render() {
@@ -53,7 +67,11 @@ const mapStateToProps = (state) => ({
   page: getPage(state)
 });
 
-export default connect(mapStateToProps)(Header);
+const mapDispatchToProps = {
+  openPage: openAddVillainMenu
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
 
 const styles = {
   container: {
@@ -68,9 +86,6 @@ const styles = {
     backgroundColor: '#ffa1a1'
   },
   location: {
-    maxWidth: 360,
-    width: '40vh',
-    minWidth: 160,
     maxHeight: 100,
     height: '8vh',
     minHeight: 40,
@@ -78,7 +93,8 @@ const styles = {
     borderRadius: 18,
     fontSize: '4vh',
     marginRight: 4,
-    marginLeft: 4
+    marginLeft: 4,
+    color: '#fff'
   },
   button: {
     maxWidth: 100,
@@ -87,7 +103,11 @@ const styles = {
     maxHeight: 100,
     height: '8vh',
     minHeight: 40,
-    borderRadius: '50%'
+    borderRadius: '50%',
+    fontSize: 48
+  },
+  buttonPlus: {
+    verticalAlign: 'text-top'
   }
 
 };

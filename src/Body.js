@@ -1,27 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal } from 'react-bootstrap';
 
-import { getPage } from './redux/reducers';
+import { getPage, getVillainIds, getVillainsLoadState, isLoaded, isLoading, getError } from './redux/reducers';
+import { PAGES } from './redux/constants';
+import LoginModal from './LoginModal';
+import AddVillainModal from './AddVillainModal';
+import Villain from './Villain';
+import { tryToGetVillains } from './redux/actions';
 
 class Body extends React.Component {
   static propTypes = {
-    page: PropTypes.string
+    page: PropTypes.string.isRequired,
+    villainIds: PropTypes.arrayOf(PropTypes.number.isRequired),
+    loadState: PropTypes.shape().isRequired,
+    getVillains: PropTypes.func.isRequired
   };
 
-  renderModal() {
-    const { page } = this.props;
+  componentDidMount() {
+    this.componentDidUpdate();
+  }
+
+  componentDidUpdate() {
+    const { page, loadState, getVillains } = this.props;
+    if (page === PAGES.VILLAINS && !isLoaded(loadState) && !isLoading(loadState) && !getError(loadState)) {
+      getVillains();
+    }
+  }
+
+  renderVillains() {
+    const { page, villainIds } = this.props;
+    if (page === PAGES.LOG_IN) {
+      return null;
+    }
     return (
-      <Modal>
-      </Modal>
+      villainIds.map((id) => <Villain key={ id } villainId={ id } />)
     );
   }
 
   render() {
     return (
-      <div>
-        { this.renderModal() }
+      <div style={ styles.container }>
+        { this.renderVillains() }
+        <LoginModal />
+        <AddVillainModal />
       </div>
     );
   }
@@ -29,11 +51,20 @@ class Body extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-  page: getPage(state)
+  page: getPage(state),
+  villainIds: getVillainIds(state),
+  loadState: getVillainsLoadState(state)
 });
 
-export default connect(mapStateToProps)(Body);
+const mapDispatchToProps = {
+  getVillains: tryToGetVillains
+};
 
-const style = {
+export default connect(mapStateToProps, mapDispatchToProps)(Body);
+
+const styles = {
+  container: {
+    overflowY: 'auto'
+  }
 
 };

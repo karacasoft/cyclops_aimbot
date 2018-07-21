@@ -7,6 +7,7 @@
     "react": "^16.4.1",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.4.1",
+    "react-icons": "^2.2.7",
     "react-redux": "^5.0.7",
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
@@ -15,6 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "docs": "react-scripts build && rm -rf docs/static && mv build/* docs/ && git add docs/*",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },

@@ -13,7 +13,8 @@ const styles = {
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: '#96d9ca'
+    backgroundColor: '#96d9ca',
+    overflow: 'auto'
   }
 };
 
