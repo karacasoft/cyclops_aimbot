@@ -81,12 +81,15 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         var rendererComponents = GetComponentsInChildren<Renderer>(true);
         var colliderComponents = GetComponentsInChildren<Collider>(true);
         var canvasComponents = GetComponentsInChildren<Canvas>(true);
-		var uianch = GetComponentInChildren<UIAnchor>();
-		if (uianch != null && uianch.UI != null)
+		if (GetComponent<Villain>()!=null && GetComponent<Villain>().isMarkerUsed)
 		{
-			var ui = uianch.UI.GetComponentsInChildren<Renderer>(true);
-			foreach (var component in ui)
-				component.enabled = true;
+			var uianch = GetComponentInChildren<UIAnchor>();
+			if (uianch != null && uianch.UI != null)
+			{
+				var ui = uianch.UI.GetComponentsInChildren<Renderer>(true);
+				foreach (var component in ui)
+					component.enabled = true;
+			}
 		}
 		// Enable rendering:
 		foreach (var component in rendererComponents)

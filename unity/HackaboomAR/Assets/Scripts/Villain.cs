@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Villain : MonoBehaviour {
 
-	public int targetID;
+	public bool isMarkerUsed=false;
 	public TextMesh nameTM,descTM;
 	public SpriteRenderer imageSR;
 	string vName,vDesc;

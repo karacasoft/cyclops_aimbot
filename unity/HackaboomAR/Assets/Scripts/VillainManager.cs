@@ -33,6 +33,7 @@ public class VillainManager : MonoBehaviour {
 			JSONNode villainData = JSON.Parse(JSONString);
 			foreach (Villain vil in villainMarkers)
 			{
+				vil.isMarkerUsed = false;
 				var uianch = vil.GetComponentInChildren<UIAnchor>();
 				if (uianch != null && uianch.UI != null)
 				{
@@ -49,6 +50,7 @@ public class VillainManager : MonoBehaviour {
 				var uianch = villainMarkers[markerID - 1].GetComponentInChildren<UIAnchor>();
 				if (uianch != null && uianch.UI != null)
 				{
+					villainMarkers[markerID - 1].isMarkerUsed = true;
 					var ui = uianch.UI.GetComponentsInChildren<Renderer>(true);
 					foreach (var component in ui)
 						component.enabled = true;
