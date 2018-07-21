@@ -1,6 +1,8 @@
 const Router = require('koa-router');
 const randomstring = require('randomstring');
 
+const Jimp = require('jimp');
+
 const fs = require('fs');
 const path = require('path');
 
@@ -26,7 +28,7 @@ imageRouter
 
     fileContents = fs.readFileSync(imagePath);
 
-    ctx.set('Content-Type', 'image/*');
+    ctx.set('Content-Type', 'image/jpeg');
     ctx.response.body = fileContents;
 })
 
@@ -37,10 +39,10 @@ imageRouter
     if(!ctx.request.body.hasOwnProperty('imageBase64')) {
         throw new Errors.Api.ParameterError(['imageBase64']);
     }
-    filename = randomstring.generate(10);
+    filename = randomstring.generate(10) + ".jpg";
     const imagePath = path.join(__dirname, 'store', filename);
     const imageData = ctx.request.body.imageBase64.replace(/^data:image\/.*;base64,/, "");
-    fs.writeFileSync(imagePath, imageData, 'base64');
+    await Jimp.read(Buffer.from(imageData, 'base64')).then(image => image.write(imagePath));
     const dbData = await Controller.create(filename);
     ctx.body = dbData.toJSON();
 });
