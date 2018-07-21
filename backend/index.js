@@ -32,7 +32,7 @@ const usersRoute = require('./users').Router;
 
 mainRouter.use(Auth.Router.routes(), Auth.Router.allowedMethods());
 
-mainRouter.use('/open', (ctx, next) => {
+mainRouter.get('/open', (ctx, next) => {
     ctx.body = "true";
 });
 
