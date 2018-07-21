@@ -26,5 +26,6 @@
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-inferno": "^7.8.0",
     "eslint-plugin-jsx-a11y": "^6.1.1"
-  }
+  },
+  "homepage": "https://triforce930.github.io/cyclops_aimbot"
 }
