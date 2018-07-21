@@ -23,8 +23,9 @@ imageRouter
 .get('/:id', async (ctx, next) => {
     const image = notFoundIfNull(await Controller.get(ctx.params.id));
     const imagePath = path.join(__dirname, 'store', image.get('filename'));
-    ctx.response.headers['Content-Type'] = 'image/*';
+    
     ctx.body = fs.readFileSync(imagePath, 'utf8');
+    ctx.headers['Content-Type'] = 'image/jpeg';
 })
 
 .post('/', Auth.Middleware)
