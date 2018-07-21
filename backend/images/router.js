@@ -19,14 +19,15 @@ const imageRouter = new Router();
 
 imageRouter
 
-.all('/', Auth.Middleware)
-
 // GET /images/:id
 .get('/:id', async (ctx, next) => {
     const image = notFoundIfNull(await Controller.get(ctx.params.id));
     const imagePath = path.join(__dirname, 'store', image.get('filename'));
+    ctx.response.headers['Content-Type'] = 'image/*';
     ctx.body = fs.readFileSync(imagePath);
 })
+
+.post('/', Auth.Middleware)
 
 // POST /images
 .post('/', async (ctx, next) => {
