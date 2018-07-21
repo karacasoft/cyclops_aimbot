@@ -67,7 +67,11 @@ villainRouter
 .delete('/:id', async (ctx, next) => {
     notFoundIfNull(await Controller.get(ctx.params.id));
     await Controller.delete(ctx.params.id);
-    ctx.status = 204; // no content
+    ctx.status = 200; // no content
+    ctx.body = {
+        status: 200,
+        message: "Success"
+    };
 });
 
 module.exports = villainRouter;
