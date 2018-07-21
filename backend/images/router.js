@@ -26,7 +26,7 @@ imageRouter
 
     fileContents = fs.readFileSync(imagePath);
 
-    ctx.set('Content-Type', 'image/jpeg');
+    ctx.set('Content-Type', 'image/*');
     ctx.response.body = fileContents;
 })
 
