@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
-using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class VillainManager : MonoBehaviour {
 
@@ -10,25 +10,54 @@ public class VillainManager : MonoBehaviour {
 	
 	public Villain[] villainMarkers;
 	void Start () {
-		string path = "Assets/Resources/data.json";
-
-		//Read the text from directly from the test.txt file
-		StreamReader reader = new StreamReader(path);
-		string JSONString = reader.ReadToEnd();
-		Debug.Log(JSONString);
-		reader.Close();
-
-		JSONNode villainData = JSON.Parse(JSONString);
-		foreach (JSONNode v in villainData.Children)
-		{
-			int markerID = v["markerid"];
-			if (markerID > 6 || markerID < 1) continue;
-			Debug.Log(v["description"]);
-			StartCoroutine(villainMarkers[markerID-1].SetVillainData(v["name"], v["description"], v["imageurl"]));
-		}
+		StartCoroutine(UpdateData());
 	}
-	
-	// Update is called once per frame
+	IEnumerator UpdateData()
+	{
+		string JSONString = "{}";
+		while (true)
+		{
+			UnityWebRequest www = UnityWebRequest.Get("http://206.189.168.177:3000/villains/withMarker");
+			yield return www.SendWebRequest();
+
+			if (www.isNetworkError || www.isHttpError)
+			{
+				Debug.Log(www.error);
+			}
+			else
+			{
+				JSONString = www.downloadHandler.text;
+			}
+			Debug.Log(JSONString);
+
+			JSONNode villainData = JSON.Parse(JSONString);
+			foreach (Villain vil in villainMarkers)
+			{
+				var uianch = vil.GetComponentInChildren<UIAnchor>();
+				if (uianch != null && uianch.UI != null)
+				{
+					var ui = uianch.UI.GetComponentsInChildren<Renderer>(true);
+					foreach (var component in ui)
+						component.enabled = false;
+				}
+			}
+			foreach (JSONNode v in villainData)
+			{
+				int markerID = v["markerid"];
+				Debug.Log(v["name"]);
+				if (markerID > 6 || markerID < 1) continue;
+				var uianch = villainMarkers[markerID - 1].GetComponentInChildren<UIAnchor>();
+				if (uianch != null && uianch.UI != null)
+				{
+					var ui = uianch.UI.GetComponentsInChildren<Renderer>(true);
+					foreach (var component in ui)
+						component.enabled = true;
+				}
+				StartCoroutine(villainMarkers[markerID - 1].SetVillainData(v["name"], v["description"], v["imageid"]));
+			}
+			yield return new WaitForSeconds(5f);
+		}	
+	}
 	void Update () {
 		
 	}

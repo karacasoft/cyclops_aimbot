@@ -9,10 +9,12 @@ public class Villain : MonoBehaviour {
 	public SpriteRenderer imageSR;
 	string vName,vDesc;
 	Sprite vImage;
-	public IEnumerator SetVillainData(string vName,string description,string imageurl)
+	public IEnumerator SetVillainData(string vName,string description,int imageid)
 	{
 		this.vName = vName;
 		this.vDesc = description;
+		string imageurl = "http://206.189.168.177:3000/images" + imageid;
+		Debug.Log(imageurl);
 		using (WWW www = new WWW(imageurl))
 		{
 			// Wait for download to complete
