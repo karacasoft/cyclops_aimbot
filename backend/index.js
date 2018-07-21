@@ -32,6 +32,10 @@ const usersRoute = require('./users').Router;
 
 mainRouter.use(Auth.Router.routes(), Auth.Router.allowedMethods());
 
+mainRouter.use('/open', (ctx, next) => {
+    ctx.body = "true";
+});
+
 mainRouter.use('/villains', villainsRoute.routes(), villainsRoute.allowedMethods());
 mainRouter.use('/images', imagesRoute.routes(), imagesRoute.allowedMethods());
 mainRouter.use('/users', usersRoute.routes(), usersRoute.allowedMethods());
